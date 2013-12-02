@@ -126,14 +126,6 @@ class ShopifyResource(ActiveResource, mixins.Countable):
     def _load_attributes_from_response(self, response):
         self._update(self.__class__.format.decode(response.body))
 
-    def __get_id(self):
-        return self.attributes.get(self.klass.primary_key)
-
-    def __set_id(self, value):
-        self.attributes[self.klass.primary_key] = value
-
-    id = property(__get_id, __set_id, None, 'Value stored in the primary key')
-
     @classmethod
     def activate_session(cls, session):
         cls.site = session.site
