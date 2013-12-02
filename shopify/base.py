@@ -1,5 +1,5 @@
 import pyactiveresource.connection
-from pyactiveresource.activeresource import ActiveResource, ResourceMeta
+from pyactiveresource.activeresource import ActiveResource, ResourceMeta, formats
 import pyactiveresource.util as util
 import shopify.yamlobjects
 import shopify.mixins as mixins
@@ -13,6 +13,11 @@ import sys
 # Store the response from the last request in the connection object
 class ShopifyConnection(pyactiveresource.connection.Connection):
     response = None
+    
+    def __init__(self, site, user=None, password=None, timeout=None,
+                 format=formats.JSONFormat):
+        super(ShopifyConnection,self).__init__(site, user, password, timeout, format)
+
     def _open(self, *args, **kwargs):
         self.response = None
         try:
@@ -124,7 +129,7 @@ class ShopifyResourceMeta(ResourceMeta):
 
 class ShopifyResource(ActiveResource, mixins.Countable):
     __metaclass__ = ShopifyResourceMeta
-    _primary_key = "id"
+    _format = formats.JSONFormat
     _threadlocal = threading.local()
     _headers = { 'User-Agent': 'ShopifyPythonAPI/%s Python/%s' % (shopify.VERSION, sys.version.split(' ', 1)[0]) }
 
