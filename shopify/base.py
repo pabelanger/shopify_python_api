@@ -18,15 +18,6 @@ class ShopifyConnection(pyactiveresource.connection.Connection):
                  format=formats.JSONFormat):
         super(ShopifyConnection,self).__init__(site, user, password, timeout, format)
 
-    def _open(self, *args, **kwargs):
-        self.response = None
-        try:
-            self.response = super(ShopifyConnection, self)._open(*args, **kwargs)
-        except pyactiveresource.connection.ConnectionError, err:
-            self.response = err.response
-            raise
-        return self.response
-
 # Inherit from pyactiveresource's metaclass in order to use ShopifyConnection
 class ShopifyResourceMeta(ResourceMeta):
     @property
@@ -116,15 +107,6 @@ class ShopifyResourceMeta(ResourceMeta):
 
     format = property(get_format, set_format, None,
                       'Encoding used for request and responses')
-
-    def get_primary_key(cls):
-        return cls._primary_key
-
-    def set_primary_key(cls, value):
-        cls._primary_key = value
-
-    primary_key = property(get_primary_key, set_primary_key, None,
-                           'Name of attribute that uniquely identies the resource')
 
 
 class ShopifyResource(ActiveResource, mixins.Countable):
